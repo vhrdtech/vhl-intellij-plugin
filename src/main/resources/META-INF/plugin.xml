@@ -1,18 +1,19 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.romixlab.vhlintellijplugin</id>
-    <name>vhl-intellij-plugin</name>
-    <vendor>romixlab</vendor>
+    <name>vhl</name>
+    <vendor>vhrd.tech</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.romixlab.vhlintellijplugin.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.romixlab.vhlintellijplugin.services.MyProjectService"/>
+        <fileType name="Vhl File" implementationClass="tech.vhrd.vhl.VhlFileType" fieldName="INSTANCE"
+                  language="Vhl" extensions="vhl"/>
+        <lang.parserDefinition
+                language="Vhl"
+                implementationClass="tech.vhrd.vhl.VhlParserDefinition"/>
+        <lang.syntaxHighlighterFactory
+                language="Vhl"
+                implementationClass="tech.vhrd.vhl.VhlSyntaxHighlighterFactory"/>
     </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.romixlab.vhlintellijplugin.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
 </idea-plugin>
