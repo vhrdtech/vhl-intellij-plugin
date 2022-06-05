@@ -7,13 +7,13 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileType name="Vhl File" implementationClass="tech.vhrd.vhl.VhlFileType" fieldName="INSTANCE"
+        <fileType name="Vhl file" implementationClass="tech.vhrd.vhl.VhlFileType" fieldName="INSTANCE"
                   language="Vhl" extensions="vhl"/>
         <lang.parserDefinition
                 language="Vhl"
                 implementationClass="tech.vhrd.vhl.VhlParserDefinition"/>
         <lang.syntaxHighlighterFactory
                 language="Vhl"
-                implementationClass="tech.vhrd.vhl.VhlSyntaxHighlighterFactory"/>
+                implementationClass="tech.vhrd.vhl.VhlHighlighterFactory"/>
     </extensions>
 </idea-plugin>

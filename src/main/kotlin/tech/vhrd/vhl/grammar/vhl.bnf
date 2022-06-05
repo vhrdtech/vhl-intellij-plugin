@@ -1,0 +1,145 @@
+{
+  // Name and the location of the parser which will be generated.
+  parserClass="tech.vhrd.vhl.VhlParser"
+  // All nodes will extend this class. This wraps AST node to a PSI node.
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  // Prefix for all generated classes.
+  psiClassPrefix="Vhl"
+  // Suffix for implementation classes.
+  psiImplClassSuffix="Impl"
+
+  // Location to be used when generating PSI classes.
+  psiPackage="tech.vhrd.vhl.psi"
+  // Location to be used when generating PSI implementation classes.
+  psiImplPackage="tech.vhrd.vhl.psi.impl"
+
+  // Element type holder class name. This class will be used extensively throughout the tutorial.
+  elementTypeHolderClass="tech.vhrd.vhl.psi.VhlTypes"
+
+  // Class which will be used to create internal nodes.
+  elementTypeClass="tech.vhrd.vhl.psi.VhlElementType"
+  // Class which will be used to create leaf nodes.
+  tokenTypeClass="tech.vhrd.vhl.lexer.VhlTokenType"
+
+  tokens = [
+          LBRACE      =  '{'
+          RBRACE      =  '}'
+          LBRACK      =  '['
+          RBRACK      =  ']'
+          LPAREN      =  '('
+          RPAREN      =  ')'
+          COLON       =  ':'
+          COLONCOLON  =  '::'
+          SEMICOLON   =  ';'
+          COMMA       =  ','
+          EQ          =  '='
+          EXCLEQ      =  '!='
+          EQEQ        =  '=='
+          SHA         =  '#'
+          SHADOT      =  '#.'
+          SHADOTDOT   =  '#..'
+          EXCL        =  '!'
+//          PLUSEQ      =  '+='
+          PLUS        =  '+'
+//          MINUSEQ     =  '-='
+          MINUS       =  '-'
+//          OREQ        =  '|='
+          ANDAND      =  '&&'
+//          ANDEQ       =  '&='
+          AND         =  '&'
+          OR          =  '|'
+          LT          =  '<'
+//          XOREQ       =  '^='
+          XOR         =  '^'
+//          MULEQ       =  '*='
+          MUL         =  '*'
+//          DIVEQ       =  '/='
+          DIV         =  '/'
+//          REMEQ       =  '%='
+          REM         =  '%'
+          GT          =  '>'
+          DOT         =  '.'
+          DOTDOT      =  '..'
+          DOTDOTDOT   =  '...'
+          DOTDOTEQ    =  '..='
+//          FAT_ARROW   =  '=>'
+//          ARROW       =  '->'
+//          Q           =  '?'
+//          T           =  '~'
+//          AT          =  '@'
+          UNDERSCORE  =  '_'
+//          DOLLAR      =  '$'
+
+          // Contextual tokens
+//          GTGTEQ    = ">>="
+//          GTGT      = ">>"
+//          GTEQ      = ">="
+//          LTLTEQ    = "<<="
+//          LTLT      = "<<"
+//          LTEQ      = "<="
+          OROR      = "||"
+          ANDAND    = "&&"
+
+          TYPE_KW   = 'type'
+
+//          RESERVED_KEYWORD = 'reserved_keyword'
+
+    space = 'regexp:\s+'
+    struct = 'struct'
+    ident = 'regexp:[0-9_a-zA-Z]+'
+  ]
+}
+
+File ::= RootItems
+private RootItems ::= RootItem_with_recover*
+private RootItem_with_recover ::= !<<eof>> Item {
+    pin = 1
+    recoverWhile = RootItem_recover
+}
+private RootItem_recover ::= !Item_first
+private Item_first ::= struct
+Item ::= StructItem
+
+////////////////////
+// Struct & Enums //
+////////////////////
+StructItem ::= struct ident (TupleStructTail | BlockStructTail | UnitStructTail)
+// Tuple struct
+private TupleStructTail ::= TupleFields ';' { pin = 1 }
+TupleFields ::= '(' TupleFieldDecl_with_recover* ')' {
+    pin = 1
+}
+private TupleFieldDecl_with_recover ::= !')' TupleFieldDecl (',' | &')') {
+    pin = 1
+    recoverWhile = TupleFieldDecl_recover
+}
+private TupleFieldDecl_recover ::= !(')')
+TupleFieldDecl ::= AnyTy
+// Regular struct
+private BlockStructTail ::= BlockFields
+BlockFields ::= '{' NamedFieldDecl_with_recover* '}' {
+    pin = 1
+}
+private NamedFieldDecl_with_recover ::= !'}' NamedFieldDecl (',' | &'}') {
+    pin = 1
+    recoverWhile = NamedFieldDecl_recover
+}
+private NamedFieldDecl_recover ::= !('}' | NamedFieldDecl_first )
+private NamedFieldDecl_first ::= Attrs_first | ident
+NamedFieldDecl ::= OuterAttr* ident TypeAscription {
+    pin = 2
+}
+
+///////////
+// Types //
+///////////
+AnyTy ::= 'u8' | 'u16' | 'u32'
+TypeAscription ::= ':' AnyTy { pin = 1 }
+
+////////////////
+// Attributes //
+////////////////
+OuterAttr ::= '#' '[' AttrUpper
+private AttrUpper ::= ']'
+private Attrs_first ::= '#'
