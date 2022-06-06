@@ -8,5 +8,5 @@ import tech.vhrd.vhl.VhlFileType
 
 class VhlFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, VhLanguage) {
     override fun getFileType(): FileType = VhlFileType
-    override fun toString(): String = "Vhl file"
+//    override fun toString(): String = "Vhl file"
 }

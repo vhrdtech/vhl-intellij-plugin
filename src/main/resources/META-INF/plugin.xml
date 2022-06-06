@@ -1,7 +1,7 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.romixlab.vhlintellijplugin</id>
-    <name>vhl</name>
+    <name>Vhl</name>
     <vendor>vhrd.tech</vendor>
 
     <depends>com.intellij.modules.platform</depends>
@@ -15,5 +15,8 @@
         <lang.syntaxHighlighterFactory
                 language="Vhl"
                 implementationClass="tech.vhrd.vhl.VhlHighlighterFactory"/>
+        <colorSettingsPage implementation="tech.vhrd.vhl.VhlColorSettingsPage"/>
+        <additionalTextAttributes scheme="Default" file="/tech/vhrd/vhl/colorscheme/VhlDarcula.xml"/>
+<!--        <additionalTextAttributes scheme="Darcula" file="/colorSchemes/Pest_dark.xml"/>-->
     </extensions>
 </idea-plugin>

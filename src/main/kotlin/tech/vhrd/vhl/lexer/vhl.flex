@@ -22,11 +22,31 @@ import static tech.vhrd.vhl.psi.VhlTypes.*;
 %type IElementType
 %unicode
 
-EOL=\R
-WHITE_SPACE=\s+
+//EOL=\R
+EOL_WS           = \n | \r | \r\n
+LINE_WS          = [\ \t]
+WHITE_SPACE_CHAR = {EOL_WS} | {LINE_WS}
+WHITE_SPACE      = {WHITE_SPACE_CHAR}+
 
-SPACE=[ \t\n\x0B\f\r]+
-IDENT=[0-9_a-zA-Z]+
+IDENT = ("r#")?[_\p{xidstart}][\p{xidcontinue}]*
+SUFFIX     = {IDENT}
+
+EXPONENT      = [eE] [-+]? [0-9_]+
+INT_LITERAL = ( {DEC_LITERAL}
+              | {HEX_LITERAL}
+              | {OCT_LITERAL}
+              | {BIN_LITERAL} ) {EXPONENT}? {SUFFIX}?
+
+DEC_LITERAL = [0-9] [0-9_]*
+HEX_LITERAL = "0x" [a-fA-F0-9_]*
+OCT_LITERAL = "0o" [0-7_]*
+BIN_LITERAL = "0b" [01_]*
+
+CHAR_LITERAL   = ( \' ( [^\\\'\r\n] | \\[^\r\n] | "\\x" [a-fA-F0-9]+ | "\\u{" [a-fA-F0-9][a-fA-F0-9_]* "}"? )? ( \' {SUFFIX}? | \\ )? )
+               | ( \' [\p{xidcontinue}]* \' {SUFFIX}? )
+STRING_LITERAL = \" ( [^\\\"] | \\[^] )* ( \" {SUFFIX}? | \\ )?
+
+DISCRETE_UNSIGNED_TY_IMPLICIT = u[1-9][0-9]*
 
 %%
 <YYINITIAL> {
@@ -70,8 +90,11 @@ IDENT=[0-9_a-zA-Z]+
   "struct"            { return STRUCT; }
   "UnitStructTail"    { return UNITSTRUCTTAIL; }
 
-  {SPACE}             { return SPACE; }
+  "u{"  { return DISCRETE_UNSIGNED_TY_EXPR; }
+  {DISCRETE_UNSIGNED_TY_IMPLICIT} { return DISCRETE_UNSIGNED_TY_IMPLICIT; }
   {IDENT}             { return IDENT; }
+  {INT_LITERAL}       { return INTEGER_LITERAL; }
+  {STRING_LITERAL}                { return STRING_LITERAL; }
 
 }
 

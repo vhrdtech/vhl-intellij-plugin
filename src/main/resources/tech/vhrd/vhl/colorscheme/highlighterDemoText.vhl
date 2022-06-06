@@ -1,0 +1,9 @@
+type X = u32;
+
+struct S {
+    f: u8
+}
+
+/group {
+    description: "Abc"
+}

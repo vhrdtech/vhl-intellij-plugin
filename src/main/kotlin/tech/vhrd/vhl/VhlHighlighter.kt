@@ -25,16 +25,17 @@ private fun makeTokenMap(): Map<IElementType, TextAttributesKey> {
 
 //    result[VhlTypes.COMMENT] = VhlColors.LINE_COMMENT
 
-//    result[VhlTypes.STRING] = VhlColors.STRING
+    result[VhlTypes.STRING_LITERAL] = VhlColors.STRING
 //
-//    result[VhlTypes.NUMBER] = VhlColors.NUMBER
+    result[VhlTypes.INTEGER_LITERAL] = VhlColors.NUMBER
 //
-//    result[VhlTypes.BOOLEAN] = VhlColors.BOOLEAN
+    result[VhlTypes.BOOL_LITERAL] = VhlColors.BOOLEAN
 //
 //    result[VhlTypes.LBRACKET] = VhlColors.BRACKETS
 //    result[VhlTypes.RBRACKET] = VhlColors.BRACKETS
     result[VhlTypes.LBRACE] = VhlColors.BRACES
     result[VhlTypes.RBRACE] = VhlColors.BRACES
+    result[VhlTypes.XPI_URI_SEGMENT] = VhlColors.XPI_URI_SEGMENT
 
-    return result;
+    return result
 }

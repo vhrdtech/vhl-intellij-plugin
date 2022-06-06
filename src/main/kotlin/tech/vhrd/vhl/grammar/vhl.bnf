@@ -36,9 +36,9 @@
           EQ          =  '='
           EXCLEQ      =  '!='
           EQEQ        =  '=='
-          SHA         =  '#'
-          SHADOT      =  '#.'
           SHADOTDOT   =  '#..'
+          SHADOT      =  '#.'
+          SHA         =  '#'
           EXCL        =  '!'
 //          PLUSEQ      =  '+='
           PLUS        =  '+'
@@ -87,19 +87,29 @@
 
     space = 'regexp:\s+'
     struct = 'struct'
-    ident = 'regexp:[0-9_a-zA-Z]+'
+    DISCRETE_UNSIGNED_TY_IMPLICIT = 'regexp:u[1-9][0-9]*'
+    DISCRETE_UNSIGNED_TY_EXPR = 'u{'
+    STRING_LITERAL = 'regexp:"[a-zA-Z]*"'
+//    CHAR_LITERAL = ''a''
+    FLOAT_LITERAL = 'regexp:[0-9][0-9_]*.regexp:[0-9][0-9_]*'
+    INTEGER_LITERAL = 'regexp:[0-9][0-9_]*'
+    BOOL_LITERAL = 'regexp:true|false'
+
+//    XPI_URI_IDENT = 'regexp:[a-z][a-z0-9_]*'
+    ident = 'regexp:[_a-zA-Z]+[0-9_a-zA-Z]*'
   ]
 }
 
-File ::= RootItems
-private RootItems ::= RootItem_with_recover*
-private RootItem_with_recover ::= !<<eof>> Item {
-    pin = 1
-    recoverWhile = RootItem_recover
-}
-private RootItem_recover ::= !Item_first
-private Item_first ::= struct
-Item ::= StructItem
+//File ::= RootItems
+//private RootItems ::= RootItem_with_recover*
+//private RootItem_with_recover ::= !<<eof>> Item {
+//    pin = 1
+//    recoverWhile = RootItem_recover
+//}
+//private RootItem_recover ::= !Item_first
+//private Item_first ::= struct type '/'
+File ::= Item*
+Item ::= StructItem | TypeAliasStmt | XpiBlock
 
 ////////////////////
 // Struct & Enums //
@@ -134,8 +144,16 @@ NamedFieldDecl ::= OuterAttr* ident TypeAscription {
 ///////////
 // Types //
 ///////////
-AnyTy ::= 'u8' | 'u16' | 'u32'
+// Boolean
+BoolTy ::= 'bool'
+
+// Discrete number types
+DiscreteUnsignedTy ::= DISCRETE_UNSIGNED_TY_IMPLICIT | DISCRETE_UNSIGNED_TY_EXPR Expr '}'
+
+private AnyTy ::= BoolTy | DiscreteUnsignedTy | 'xyz'
 TypeAscription ::= ':' AnyTy { pin = 1 }
+
+TypeAliasStmt ::= 'type' ident '=' AnyTy ';' { pin = 3 }
 
 ////////////////
 // Attributes //
@@ -143,3 +161,56 @@ TypeAscription ::= ':' AnyTy { pin = 1 }
 OuterAttr ::= '#' '[' AttrUpper
 private AttrUpper ::= ']'
 private Attrs_first ::= '#'
+
+/////////////////
+// Expressions //
+/////////////////
+Expr ::= InfixExpr | ExprInner
+ExprTicked ::= '`' Expr '`'
+private InfixExpr ::= ExprInner (BinOp ExprInner)+
+private ExprInner ::= CallExpr
+                    | IndexIntoExpr
+//                    | BoolOrBinExpr
+//                    | BoolAndBinExpr
+//                    | CompBinExpr
+//                    | RelCompBinExpr
+//                    | BitOrBinExpr
+//                    | BitXorBinExpr
+//                    | BitAndBinExpr
+//                    | BitShiftBinExpr
+//                    | AddBinExpr
+//                    | MulBinExpr
+//                    | UnaryExpr
+                    | AtomExpr
+BinOp ::= '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '<<' | '>>' | '..=' | '..' | '.'
+CallExpr ::= CallThenIndexExpr | CallAfterIndexExpr | CallLocalExpr
+private CallThenIndexExpr ::= ident CallArguments IndexArguments
+private CallAfterIndexExpr ::= ident IndexArguments CallArguments
+private CallLocalExpr ::= ident CallArguments
+IndexIntoExpr ::= ident IndexArguments
+CallArguments ::= '(' (Expr (',' Expr)* ','?)? ')'
+IndexArguments ::= '[' (Expr (',' Expr)* ','?)? ']'
+
+private AtomExpr ::= LitExpr
+//                    | StructLiteral
+//                    | DotExpr
+//                    | IndexExpr
+//                    | PathExpr !'('
+//                    | CallExpr
+//                    | ArrayExpr
+//                    | UnitExpr
+//                    | TupleOrParenExpr
+
+LitExpr ::= AnyLitToken
+private AnyLitToken ::= STRING_LITERAL | FLOAT_LITERAL | INTEGER_LITERAL | BOOL_LITERAL
+
+/////////
+// xPI //
+/////////
+XpiBlock ::= '/' XpiUriSegment XpiResourceTy? XpiBody
+XpiUriSegment ::= ident ExprTicked? ident?
+XpiResourceTy ::= '<' AnyTy? (',' XpiSerial)? '>'
+XpiSerial ::= "'" INTEGER_LITERAL
+XpiBody ::= '{' XpiItem* '}'
+private XpiItem ::= XpiBlock | XpiField
+XpiField ::= ident ':' Expr ';'
