@@ -18,5 +18,8 @@
         <colorSettingsPage implementation="tech.vhrd.vhl.VhlColorSettingsPage"/>
         <additionalTextAttributes scheme="Default" file="/tech/vhrd/vhl/colorscheme/VhlDarcula.xml"/>
 <!--        <additionalTextAttributes scheme="Darcula" file="/colorSchemes/Pest_dark.xml"/>-->
+
+        <!-- Annotators -->
+        <annotator language="Vhl" implementationClass="tech.vhrd.vhl.annotator.VhlHighlightingAnnotator"/>
     </extensions>
 </idea-plugin>

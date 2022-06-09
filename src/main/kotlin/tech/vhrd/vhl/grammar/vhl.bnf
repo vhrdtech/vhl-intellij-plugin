@@ -109,7 +109,8 @@
 //private RootItem_recover ::= !Item_first
 //private Item_first ::= struct type '/'
 File ::= Item*
-Item ::= StructItem | TypeAliasStmt | XpiBlock
+Item ::= StructItem | TypeAliasStmt | XpiBlock { recoverWhile = top_level_recover }
+private top_level_recover ::= !('struct' | 'enum' | 'type' | '/')
 
 ////////////////////
 // Struct & Enums //
@@ -182,7 +183,7 @@ private ExprInner ::= CallExpr
 //                    | MulBinExpr
 //                    | UnaryExpr
                     | AtomExpr
-BinOp ::= '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '<<' | '>>' | '..=' | '..' | '.'
+BinOp ::= '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '<<' | '>>' | '..=' | '..' | '.' | '#/'
 CallExpr ::= CallThenIndexExpr | CallAfterIndexExpr | CallLocalExpr
 private CallThenIndexExpr ::= ident CallArguments IndexArguments
 private CallAfterIndexExpr ::= ident IndexArguments CallArguments
@@ -192,6 +193,7 @@ CallArguments ::= '(' (Expr (',' Expr)* ','?)? ')'
 IndexArguments ::= '[' (Expr (',' Expr)* ','?)? ']'
 
 private AtomExpr ::= LitExpr
+                   | ident
 //                    | StructLiteral
 //                    | DotExpr
 //                    | IndexExpr
@@ -202,13 +204,13 @@ private AtomExpr ::= LitExpr
 //                    | TupleOrParenExpr
 
 LitExpr ::= AnyLitToken
-private AnyLitToken ::= STRING_LITERAL | FLOAT_LITERAL | INTEGER_LITERAL | BOOL_LITERAL
+private AnyLitToken ::= STRING_LITERAL | CHAR_LITERAL | FLOAT_LITERAL | INTEGER_LITERAL | BOOL_LITERAL
 
 /////////
 // xPI //
 /////////
-XpiBlock ::= '/' XpiUriSegment XpiResourceTy? XpiBody
-XpiUriSegment ::= ident ExprTicked? ident?
+XpiBlock ::= XpiUriSegment XpiResourceTy? XpiBody
+XpiUriSegment ::= '#' ident ExprTicked? ident?
 XpiResourceTy ::= '<' AnyTy? (',' XpiSerial)? '>'
 XpiSerial ::= "'" INTEGER_LITERAL
 XpiBody ::= '{' XpiItem* '}'

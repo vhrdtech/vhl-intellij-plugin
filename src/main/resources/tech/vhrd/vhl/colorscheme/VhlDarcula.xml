@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <list>
-    <option name="vhl.XPI_URI_SEGMENT">
+    <option name="vhl.URI_IDENT">
         <value>
             <option name="FOREGROUND" value="1ba9ac"/>
         </value>

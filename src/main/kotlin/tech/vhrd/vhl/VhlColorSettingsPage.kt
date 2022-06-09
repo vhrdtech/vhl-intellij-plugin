@@ -19,7 +19,7 @@ class VhlColorSettingsPage : ColorSettingsPage {
         d("Brackets", VhlColors.BRACKETS),
         d("Braces", VhlColors.BRACES),
         d("Comma", VhlColors.COMMA),
-        d("XpiUriSegment", VhlColors.XPI_URI_SEGMENT)
+        d("XpiUriIdent", VhlColors.XPI_URI_IDENT)
     )
 
     // This tags should be kept in sync with RustAnnotator highlighting logic

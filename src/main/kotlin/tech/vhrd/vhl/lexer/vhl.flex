@@ -13,6 +13,8 @@ import static tech.vhrd.vhl.psi.VhlTypes.*;
   public VhlLexer() {
     this((java.io.Reader)null);
   }
+
+  private boolean is_in_uri = false;
 %}
 
 %public
@@ -24,6 +26,7 @@ import static tech.vhrd.vhl.psi.VhlTypes.*;
 
 //EOL=\R
 EOL_WS           = \n | \r | \r\n
+NL = \n
 LINE_WS          = [\ \t]
 WHITE_SPACE_CHAR = {EOL_WS} | {LINE_WS}
 WHITE_SPACE      = {WHITE_SPACE_CHAR}+
@@ -50,7 +53,6 @@ DISCRETE_UNSIGNED_TY_IMPLICIT = u[1-9][0-9]*
 
 %%
 <YYINITIAL> {
-  {WHITE_SPACE}       { return WHITE_SPACE; }
 
   "{"                 { return LBRACE; }
   "}"                 { return RBRACE; }
@@ -96,6 +98,7 @@ DISCRETE_UNSIGNED_TY_IMPLICIT = u[1-9][0-9]*
   {INT_LITERAL}       { return INTEGER_LITERAL; }
   {STRING_LITERAL}                { return STRING_LITERAL; }
 
+  {WHITE_SPACE}       { return WHITE_SPACE; }
 }
 
 [^] { return BAD_CHARACTER; }

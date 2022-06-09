@@ -4,6 +4,8 @@ struct S {
     f: u8
 }
 
-/group {
-    description: "Abc"
+#group`1..2`xx {
+    description: "Abc";
+
+    #subgroup {}
 }

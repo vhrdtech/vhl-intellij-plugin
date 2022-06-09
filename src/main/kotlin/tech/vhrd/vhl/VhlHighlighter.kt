@@ -35,7 +35,7 @@ private fun makeTokenMap(): Map<IElementType, TextAttributesKey> {
 //    result[VhlTypes.RBRACKET] = VhlColors.BRACKETS
     result[VhlTypes.LBRACE] = VhlColors.BRACES
     result[VhlTypes.RBRACE] = VhlColors.BRACES
-    result[VhlTypes.XPI_URI_SEGMENT] = VhlColors.XPI_URI_SEGMENT
+    result[VhlTypes.XPI_URI_SEGMENT] = VhlColors.XPI_URI_IDENT
 
     return result
 }

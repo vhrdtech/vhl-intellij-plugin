@@ -20,5 +20,5 @@ object VhlColors {
 
     val COMMA = r("vhl.COMMA", Default.COMMA)
 
-    val XPI_URI_SEGMENT = r("vhl.XPI_URI_SEGMENT", Default.IDENTIFIER)
+    val XPI_URI_IDENT = r("vhl.URI_IDENT", Default.IDENTIFIER)
 }
