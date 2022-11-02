@@ -128,7 +128,7 @@
 //private Item_first ::= struct type '/'
 file ::= (INNER_BLOCK_DOC_COMMENT | INNER_EOL_DOC_COMMENT)* item*
 item ::= struct_def | enum_def | type_alias_stmt | xpi_block { recoverWhile = top_level_recover }
-private top_level_recover ::= !('struct' | 'enum' | 'type' | 'rs' | 'const')
+private top_level_recover ::= !('struct' | 'enum' | 'type' | 'rs' | 'const' | doc_attr)
 
 path ::= ident ('::' ident)*
 
