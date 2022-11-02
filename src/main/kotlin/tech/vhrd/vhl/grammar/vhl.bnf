@@ -101,11 +101,9 @@
     space = 'regexp:\s+'
     comment='regexp:(?!///)//.*'
     DOC_LINE='regexp:///.*'
-    struct = 'struct'
     DISCRETE_UNSIGNED_TY_IMPLICIT = 'regexp:u[1-9][0-9]*'
     DISCRETE_SIGNED_TY_IMPLICIT = 'regexp:i[1-9][0-9]*'
     STRING_LITERAL = 'regexp:".*"'
-//    CHAR_LITERAL = ''a''
     FLOAT_LIT_RAW = 'regexp:[0-9][0-9_]*.[0-9][0-9_]*'
     DEC_LIT_RAW = 'regexp:[0-9][0-9_]*'
     HEX_LIT_RAW = 'regexp:0x[0-9a-f_]+'
@@ -134,7 +132,7 @@ path ::= ident ('::' ident)*
 ////////////////////
 // Struct & Enums //
 ////////////////////
-struct_def ::= doc_attr struct ident (tuple_struct_tail | block_fields | ';')
+struct_def ::= doc_attr 'struct' ident (tuple_struct_tail | block_fields | ';')
 // Tuple struct
 private tuple_struct_tail ::= tuple_ty ';' { pin = 1 }
 tuple_ty ::= '(' tuple_field_decl_with_recover* ')' {
@@ -217,11 +215,7 @@ number_lit ::= fixed_lit | float_lit | discrete_lit
 fixed_lit ::= 'todo'
 float_lit ::= FLOAT_LIT_RAW
 bool_lit ::= 'true' | 'false'
-discrete_lit ::= (hex_lit_raw | bin_lit_raw | oct_lit_raw | dec_lit_raw) discrete_ty?
-hex_lit_raw ::= HEX_LIT_RAW
-bin_lit_raw ::= BIN_LIT_RAW
-oct_lit_raw ::= OCT_LIT_RAW
-dec_lit_raw ::= DEC_LIT_RAW
+discrete_lit ::= (HEX_LIT_RAW | BIN_LIT_RAW | OCT_LIT_RAW | DEC_LIT_RAW) discrete_ty?
 
 string_lit ::= STRING_LITERAL
 array_lit ::= '[' lit (',' lit)* ','? ']'
@@ -234,9 +228,7 @@ outer_attr ::= '#' '[' attribute ']'
 attribute ::= path attribute_input?
 attribute_input ::= ( '(' expr ')' ) | ('~' 'tt')
 
-doc_line ::= DOC_LINE
-
-private doc_attr ::= doc_line* outer_attr*
+private doc_attr ::= DOC_LINE* outer_attr*
 
 /////////////////
 // Expressions //

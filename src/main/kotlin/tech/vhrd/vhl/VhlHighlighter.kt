@@ -27,9 +27,8 @@ private fun makeTokenMap(): Map<IElementType, TextAttributesKey> {
 
     result[VhlTypes.STRING_LITERAL] = VhlColors.STRING
 //
-    result[VhlTypes.INTEGER_LITERAL] = VhlColors.NUMBER
-//
-    result[VhlTypes.BOOL_LITERAL] = VhlColors.BOOLEAN
+    result[VhlTypes.DISCRETE_LIT] = VhlColors.NUMBER
+
 //
 //    result[VhlTypes.LBRACKET] = VhlColors.BRACKETS
 //    result[VhlTypes.RBRACKET] = VhlColors.BRACKETS
