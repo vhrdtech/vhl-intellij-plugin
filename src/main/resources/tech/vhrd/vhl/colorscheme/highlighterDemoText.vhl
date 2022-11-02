@@ -1,11 +1,18 @@
-type X = u32;
+//! Inner doc line
+// Comment
+
+/// Outer doc line
+type X = autonum<0.0, 0.1, 1.0>;
 
 struct S {
     f: u8
 }
 
-#group`1..2`xx {
-    description: "Abc";
+enum E {
+    A,
+    B
+}
 
-    #subgroup {}
+rs main {
+    rs channel<rw u32> {}
 }

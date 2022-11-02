@@ -99,8 +99,8 @@
 //          RESERVED_KEYWORD = 'reserved_keyword'
 
     space = 'regexp:\s+'
-    comment='regexp:(?!///)//.*'
-    DOC_LINE='regexp:///.*'
+//    comment='regexp:(?!///)//.*'
+//    DOC_LINE='regexp:///.*'
     DISCRETE_UNSIGNED_TY_IMPLICIT = 'regexp:u[1-9][0-9]*'
     DISCRETE_SIGNED_TY_IMPLICIT = 'regexp:i[1-9][0-9]*'
     STRING_LITERAL = 'regexp:".*"'
@@ -112,6 +112,9 @@
 
     ident = 'regexp:[_a-zA-Z]+[0-9_a-zA-Z]*'
     ident_continue = 'regexp:[0-9_a-zA-Z]+'
+
+    BLOCK_COMMENT = 'block_comment_lx'
+    EOL_COMMENT = 'eol_comment_lx'
   ]
 }
 
@@ -123,7 +126,7 @@
 //}
 //private RootItem_recover ::= !Item_first
 //private Item_first ::= struct type '/'
-file ::= item*
+file ::= (INNER_BLOCK_DOC_COMMENT | INNER_EOL_DOC_COMMENT)* item*
 item ::= struct_def | enum_def | type_alias_stmt | xpi_block { recoverWhile = top_level_recover }
 private top_level_recover ::= !('struct' | 'enum' | 'type' | 'rs' | 'const')
 
@@ -228,7 +231,7 @@ outer_attr ::= '#' '[' attribute ']'
 attribute ::= path attribute_input?
 attribute_input ::= ( '(' expr ')' ) | ('~' 'tt')
 
-private doc_attr ::= DOC_LINE* outer_attr*
+private doc_attr ::= (OUTER_BLOCK_DOC_COMMENT | OUTER_EOL_DOC_COMMENT)* outer_attr*
 
 /////////////////
 // Expressions //
@@ -286,3 +289,4 @@ xpi_item_recover ::= !('}' | (ident ':') | 'rs' | 'impl')
 
 xpi_field ::= ident ':' expr ';' { pin = 2 }
 xpi_impl ::= 'impl' expr ';' { pin = 1 }
+

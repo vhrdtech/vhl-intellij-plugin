@@ -5,12 +5,16 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import tech.vhrd.vhl.VhlColors
+import tech.vhrd.vhl.psi.VhlEnumItem
+import tech.vhrd.vhl.psi.VhlXpiResourceTransform
 import tech.vhrd.vhl.psi.VhlXpiUriSegment
 
 class VhlHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val color = when (element) {
             is VhlXpiUriSegment -> VhlColors.XPI_URI_IDENT
+            is VhlXpiResourceTransform -> VhlColors.XPI_RS_TRANSFORM
+            is VhlEnumItem -> VhlColors.CONSTANT
             else -> null
         } ?: return
 

@@ -10,7 +10,7 @@ import javax.swing.Icon
 
 object VhlIcons {
 
-    val VHL = IconLoader.getIcon("/icons/icon.png", VhlIcons.javaClass)
+    val VHL = IconLoader.getIcon("/icons/vhl-file.png", VhlIcons.javaClass)
 //    public val VHL_BIG = IconLoader.getIcon("/org/toml/lang/icons/toml@2x.png")
 
     val MODULE   = AllIcons.Nodes.Package

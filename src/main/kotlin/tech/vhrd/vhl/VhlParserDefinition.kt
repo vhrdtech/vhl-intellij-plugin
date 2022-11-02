@@ -34,7 +34,7 @@ public class VhlParserDefinition : ParserDefinition {
         WHITE_SPACES
 
     override fun getCommentTokens(): TokenSet =
-        TokenSet.EMPTY;
+        COMMENTS;
 
     override fun getFileNodeType(): IFileElementType =
         FILE
@@ -48,7 +48,7 @@ public class VhlParserDefinition : ParserDefinition {
     companion object {
         val FILE: IFileElementType = IFileElementType(VhLanguage)
         val WHITE_SPACES: TokenSet = TokenSet.create(TokenType.WHITE_SPACE);
-//        val COMMENTS: TokenSet = TokenSet.create(VhlTypes.COMMENT);
+        val COMMENTS: TokenSet = TokenSet.create(VhlTypes.EOL_COMMENT, VhlTypes.BLOCK_COMMENT);
     }
 
 }

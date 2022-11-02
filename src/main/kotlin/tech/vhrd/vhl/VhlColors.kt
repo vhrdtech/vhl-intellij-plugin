@@ -8,17 +8,22 @@ object VhlColors {
     private fun r(id: String, attrKey: TextAttributesKey) =
         TextAttributesKey.createTextAttributesKey(id, attrKey)
 
-    val KEY = r("vhl.KEYWORD", Default.KEYWORD)
+    val KEYWORD = r("vhl.KEYWORD", Default.KEYWORD)
     val STRING = r("vhl.STRING", Default.STRING)
     val NUMBER = r("vhl.NUMBER", Default.NUMBER)
+    val CONSTANT = r("vhl.CONSTANT", Default.CONSTANT)
     val BOOLEAN = r("vhl.BOOLEAN", Default.PREDEFINED_SYMBOL)
 
-    val LINE_COMMENT = r("vhl.LINE_COMMENT", Default.LINE_COMMENT)
+    val EOL_COMMENT = r("vhl.LINE_COMMENT", Default.LINE_COMMENT)
+    val BLOCK_COMMENT = r("vhl.BLOCK_COMMENT", Default.BLOCK_COMMENT)
+
+    val DOC_COMMENT = r("vhl.DOC_COMMENT", Default.DOC_COMMENT)
 
     val BRACKETS = r("vhl.BRACKETS", Default.BRACKETS)
     val BRACES = r("vhl.BRACES", Default.BRACES)
 
     val COMMA = r("vhl.COMMA", Default.COMMA)
 
-    val XPI_URI_IDENT = r("vhl.URI_IDENT", Default.IDENTIFIER)
+    val XPI_URI_IDENT = r("vhl.URI_IDENT", Default.INSTANCE_METHOD)
+    val XPI_RS_TRANSFORM = r("vhl.XPI_RS_TRANSFORM", Default.KEYWORD)
 }
