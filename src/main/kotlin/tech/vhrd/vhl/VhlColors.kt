@@ -26,4 +26,10 @@ object VhlColors {
 
     val XPI_URI_IDENT = r("vhl.URI_IDENT", Default.INSTANCE_METHOD)
     val XPI_RS_TRANSFORM = r("vhl.XPI_RS_TRANSFORM", Default.KEYWORD)
+
+    val ENUM_ITEM = r("vhl.ENUM_ITEM", Default.CONSTANT)
+    val STRUCT_ITEM = r("vhl.STRUCT_ITEM", Default.CONSTANT)
+    val BUILTIN_TYPE = r("vhl.BUILTIN_TYPE", Default.KEYWORD)
+    val ATTRIBUTE = r("vhl.ATTRIBUTE", Default.METADATA)
+    val UNIT = r("vhl.UNIT", Default.METADATA)
 }

@@ -261,7 +261,7 @@ index_arguments ::= '[' expr_list? ']'
 ///////////
 // Units //
 ///////////
-unit_expr_ticked ::= '`' ('todo' | 'ms' | 'K') '`'
+unit_expr_ticked ::= '`' expr '`'
 
 /////////
 // xPI //
