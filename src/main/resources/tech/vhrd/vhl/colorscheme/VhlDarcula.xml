@@ -1,8 +1,8 @@
 <?xml version='1.0'?>
 <list>
-    <option name="vhl.URI_IDENT">
+    <option name="vhl.UNIT">
         <value>
-            <option name="FOREGROUND" value="1ba9ac"/>
+            <option name="FOREGROUND" value="519F6F"/>
         </value>
     </option>
 </list>
