@@ -36,9 +36,6 @@
           EQ          =  '='
           EXCLEQ      =  '!='
           EQEQ        =  '=='
-          SHADOTDOT   =  '#..'
-          SHADOT      =  '#.'
-          SHA         =  '#'
           EXCL        =  '!'
 //          PLUSEQ      =  '+='
           PLUS        =  '+'
@@ -65,11 +62,14 @@
           DOTDOTEQ    =  '..='
 //          FAT_ARROW   =  '=>'
 //          ARROW       =  '->'
-//          Q           =  '?'
+          UNBOUND       =  '?'
 //          T           =  '~'
-//          AT          =  '@'
+          BOUND         =  '@'
+          MIN_BOUND = 'min'
+          MAX_BOUND = 'max'
           UNDERSCORE  =  '_'
 //          DOLLAR      =  '$'
+          HASH = '#'
 
           // Contextual tokens
 //          GTGTEQ    = ">>="
@@ -82,21 +82,38 @@
           ANDAND    = "&&"
 
           TYPE_KW   = 'type'
+          RS_KW = 'rs'
+          STRUCT_KW = 'struct'
+          ENUM_KW = 'enum'
+          FN_KW = 'fn'
+          CONST_KW = 'const'
+          TRUE = 'true'
+          FALSE = 'false'
+          RW_KW = 'rw'
+          RO_KW = 'ro'
+          WO_KW = 'wo'
+          IMPL_KW = 'impl'
+          STREAM_KW = 'stream'
+          OBSERVE_KW = 'observe'
 
 //          RESERVED_KEYWORD = 'reserved_keyword'
 
     space = 'regexp:\s+'
+    comment='regexp:(?!///)//.*'
+    DOC_LINE='regexp:///.*'
     struct = 'struct'
     DISCRETE_UNSIGNED_TY_IMPLICIT = 'regexp:u[1-9][0-9]*'
-    DISCRETE_UNSIGNED_TY_EXPR = 'u{'
-    STRING_LITERAL = 'regexp:"[a-zA-Z]*"'
+    DISCRETE_SIGNED_TY_IMPLICIT = 'regexp:i[1-9][0-9]*'
+    STRING_LITERAL = 'regexp:".*"'
 //    CHAR_LITERAL = ''a''
-    FLOAT_LITERAL = 'regexp:[0-9][0-9_]*.regexp:[0-9][0-9_]*'
-    INTEGER_LITERAL = 'regexp:[0-9][0-9_]*'
-    BOOL_LITERAL = 'regexp:true|false'
+    FLOAT_LIT_RAW = 'regexp:[0-9][0-9_]*.[0-9][0-9_]*'
+    DEC_LIT_RAW = 'regexp:[0-9][0-9_]*'
+    HEX_LIT_RAW = 'regexp:0x[0-9a-f_]+'
+    OCT_LIT_RAW = 'regexp:0o[0-7_]+'
+    BIN_LIT_RAW = 'regexp:0b[01_]+'
 
-//    XPI_URI_IDENT = 'regexp:[a-z][a-z0-9_]*'
     ident = 'regexp:[_a-zA-Z]+[0-9_a-zA-Z]*'
+    ident_continue = 'regexp:[0-9_a-zA-Z]+'
   ]
 }
 
@@ -108,111 +125,172 @@
 //}
 //private RootItem_recover ::= !Item_first
 //private Item_first ::= struct type '/'
-File ::= Item*
-Item ::= StructItem | TypeAliasStmt | XpiBlock { recoverWhile = top_level_recover }
-private top_level_recover ::= !('struct' | 'enum' | 'type' | '/')
+file ::= item*
+item ::= struct_def | enum_def | type_alias_stmt | xpi_block { recoverWhile = top_level_recover }
+private top_level_recover ::= !('struct' | 'enum' | 'type' | 'rs' | 'const')
+
+path ::= ident ('::' ident)*
 
 ////////////////////
 // Struct & Enums //
 ////////////////////
-StructItem ::= struct ident (TupleStructTail | BlockStructTail | UnitStructTail)
+struct_def ::= doc_attr struct ident (tuple_struct_tail | block_fields | ';')
 // Tuple struct
-private TupleStructTail ::= TupleFields ';' { pin = 1 }
-TupleFields ::= '(' TupleFieldDecl_with_recover* ')' {
+private tuple_struct_tail ::= tuple_ty ';' { pin = 1 }
+tuple_ty ::= '(' tuple_field_decl_with_recover* ')' {
     pin = 1
 }
-private TupleFieldDecl_with_recover ::= !')' TupleFieldDecl (',' | &')') {
+private tuple_field_decl_with_recover ::= !')' ty (',' | &')') {
     pin = 1
-    recoverWhile = TupleFieldDecl_recover
+//    recoverWhile = tuple_field_decl_recover
 }
-private TupleFieldDecl_recover ::= !(')')
-TupleFieldDecl ::= AnyTy
+//tuple_field_decl_recover ::= !(')' | ',')
 // Regular struct
-private BlockStructTail ::= BlockFields
-BlockFields ::= '{' NamedFieldDecl_with_recover* '}' {
+block_fields ::= '{' named_field_decl_with_recover* '}' {
     pin = 1
 }
-private NamedFieldDecl_with_recover ::= !'}' NamedFieldDecl (',' | &'}') {
+private named_field_decl_with_recover ::= !'}' named_field_decl (',' | &'}') {
     pin = 1
-    recoverWhile = NamedFieldDecl_recover
+    recoverWhile = named_field_decl_recover
 }
-private NamedFieldDecl_recover ::= !('}' | NamedFieldDecl_first )
-private NamedFieldDecl_first ::= Attrs_first | ident
-NamedFieldDecl ::= OuterAttr* ident TypeAscription {
+private named_field_decl_recover ::= !('}' | ident )
+named_field_decl ::= doc_attr ident type_ascription {
     pin = 2
 }
+
+enum_def ::= doc_attr 'enum' ident enum_items
+private enum_items ::= '{' enum_item (',' enum_item)* ','? '}'
+enum_item ::= ident enum_item_kind?
+private enum_item_kind ::= block_fields | tuple_ty | enum_item_discriminant
+enum_item_discriminant ::= '=' expr
 
 ///////////
 // Types //
 ///////////
-// Boolean
-BoolTy ::= 'bool'
+ty ::= standard_ty | (path generics?)
+private standard_ty ::= bool_ty
+    | discrete_ty
+    | fixed_ty
+    | floating_ty
+    | textual_ty
+    | tuple_ty
+    | array_ty
+    | derive
+    | fn_ty
+bool_ty ::= 'bool'
 
-// Discrete number types
-DiscreteUnsignedTy ::= DISCRETE_UNSIGNED_TY_IMPLICIT | DISCRETE_UNSIGNED_TY_EXPR Expr '}'
+discrete_signed_ty ::= DISCRETE_SIGNED_TY_IMPLICIT
+discrete_unsigned_ty ::= DISCRETE_UNSIGNED_TY_IMPLICIT
+discrete_ty ::= (discrete_signed_ty | discrete_unsigned_ty) '_'? num_bound_braced? '_'? unit_expr_ticked?
 
-private AnyTy ::= BoolTy | DiscreteUnsignedTy | 'xyz'
-TypeAscription ::= ':' AnyTy { pin = 1 }
 
-TypeAliasStmt ::= 'type' ident '=' AnyTy ';' { pin = 3 }
+array_ty ::= '[' ty ';' num_bound ']'
+derive ::= '_'
 
-////////////////
-// Attributes //
-////////////////
-OuterAttr ::= '#' '[' AttrUpper
-private AttrUpper ::= ']'
-private Attrs_first ::= '#'
+fn_ty ::= 'fn' fn_args fn_ret_ty?
+fn_args ::= '(' fn_arg? (',' fn_arg)* ','? ')'
+fn_arg ::= ident type_ascription
+fn_ret_ty ::= '->' ty
+
+type_ascription ::= ':' ty { pin = 1 }
+
+type_alias_stmt ::= 'type' ident '=' ty ';' { pin = 3 }
+
+generics ::= '<' generic_param (',' generic_param)* ','? '>'
+generic_param ::= expr | ty
+
+////////////
+// Bounds //
+////////////
+num_bound ::= num_unbound | num_bound_min | num_bound_max | num_bound_list
+num_bound_braced ::= '@' '{' num_bound '}'
+num_unbound ::= '?'
+num_bound_min ::= 'min' number_lit
+num_bound_max ::= 'max' number_lit
+num_bound_list ::= expr_list
+
+//////////////
+// Literals //
+//////////////
+lit ::= bool_lit | fixed_lit | float_lit | discrete_lit | char_lit | string_lit | tuple_lit | struct_lit | enum_lit | array_lit
+number_lit ::= fixed_lit | float_lit | discrete_lit
+fixed_lit ::= 'todo'
+float_lit ::= FLOAT_LIT_RAW
+bool_lit ::= 'true' | 'false'
+discrete_lit ::= (hex_lit_raw | bin_lit_raw | oct_lit_raw | dec_lit_raw) discrete_ty?
+hex_lit_raw ::= HEX_LIT_RAW
+bin_lit_raw ::= BIN_LIT_RAW
+oct_lit_raw ::= OCT_LIT_RAW
+dec_lit_raw ::= DEC_LIT_RAW
+
+string_lit ::= STRING_LITERAL
+array_lit ::= '[' lit (',' lit)* ','? ']'
+
+///////////////////////
+// Attributes & Docs //
+///////////////////////
+inner_attr ::= '#!' '[' attribute ']'
+outer_attr ::= '#' '[' attribute ']'
+attribute ::= path attribute_input?
+attribute_input ::= ( '(' expr ')' ) | ('~' 'tt')
+
+doc_line ::= DOC_LINE
+
+private doc_attr ::= doc_line* outer_attr*
 
 /////////////////
 // Expressions //
 /////////////////
-Expr ::= InfixExpr | ExprInner
-ExprTicked ::= '`' Expr '`'
-private InfixExpr ::= ExprInner (BinOp ExprInner)+
-private ExprInner ::= CallExpr
-                    | IndexIntoExpr
-//                    | BoolOrBinExpr
-//                    | BoolAndBinExpr
-//                    | CompBinExpr
-//                    | RelCompBinExpr
-//                    | BitOrBinExpr
-//                    | BitXorBinExpr
-//                    | BitAndBinExpr
-//                    | BitShiftBinExpr
-//                    | AddBinExpr
-//                    | MulBinExpr
-//                    | UnaryExpr
-                    | AtomExpr
-BinOp ::= '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '<<' | '>>' | '..=' | '..' | '.' | '#/'
-CallExpr ::= CallThenIndexExpr | CallAfterIndexExpr | CallLocalExpr
-private CallThenIndexExpr ::= ident CallArguments IndexArguments
-private CallAfterIndexExpr ::= ident IndexArguments CallArguments
-private CallLocalExpr ::= ident CallArguments
-IndexIntoExpr ::= ident IndexArguments
-CallArguments ::= '(' (Expr (',' Expr)* ','?)? ')'
-IndexArguments ::= '[' (Expr (',' Expr)* ','?)? ']'
+expr ::= infix_expr | expr_inner
+expr_ticked ::= '`' expr '`'
+expr_list ::= expr (',' expr)* ','?
+private infix_expr ::= expr_inner (BinOp expr_inner)+
+private expr_inner ::= call_expr
+                    | index_into_expr
+                    | lit
+                    | (&(standard_ty | (path generics)) ty)
+                    | path
+                    | unary_expr
+                    | tuple_of_expressions
+                    | expression_parenthesized
 
-private AtomExpr ::= LitExpr
-                   | ident
-//                    | StructLiteral
-//                    | DotExpr
-//                    | IndexExpr
-//                    | PathExpr !'('
-//                    | CallExpr
-//                    | ArrayExpr
-//                    | UnitExpr
-//                    | TupleOrParenExpr
+BinOp ::= '+' | '-' | '*' | '/' | '%' | '&' | '|' | '^' | '<<' | '>>' | '..=' | '..' | '.'
+call_expr ::= call_then_index | call_after_index | call_only
+private call_then_index ::= path call_arguments index_arguments
+private call_after_index ::= path index_arguments call_arguments
+private call_only ::= path call_arguments
+index_into_expr ::= path index_arguments
+call_arguments ::= '(' expr_list? ')'
+index_arguments ::= '[' expr_list? ']'
 
-LitExpr ::= AnyLitToken
-private AnyLitToken ::= STRING_LITERAL | CHAR_LITERAL | FLOAT_LITERAL | INTEGER_LITERAL | BOOL_LITERAL
+///////////
+// Units //
+///////////
+unit_expr_ticked ::= '`' ('todo' | 'ms' | 'K') '`'
 
 /////////
 // xPI //
 /////////
-XpiBlock ::= XpiUriSegment XpiResourceTy? XpiBody
-XpiUriSegment ::= '#' ident ExprTicked? ident?
-XpiResourceTy ::= '<' AnyTy? (',' XpiSerial)? '>'
-XpiSerial ::= "'" INTEGER_LITERAL
-XpiBody ::= '{' XpiItem* '}'
-private XpiItem ::= XpiBlock | XpiField
-XpiField ::= ident ':' Expr ';'
+xpi_block ::= doc_attr 'rs' xpi_uri_segment xpi_resource_ty? xpi_body?
+xpi_uri_segment ::= (ident expr_ticked? ident_continue?) | (expr_ticked ident_continue?)
+xpi_resource_ty ::= '<' (xpi_resource_transform? (xpi_resource_cell_ty | ty))? (',' xpi_serial)? '>' {
+    recoverWhile = xpi_resource_ty_recover
+}
+xpi_resource_ty_recover ::= !('{')
+
+xpi_resource_cell_ty ::= 'Cell' '<' xpi_resource_transform? ty '>'
+xpi_resource_transform ::= xpi_access_mode ('+' xpi_mod_stream | xpi_mod_observe)?
+xpi_access_mode ::= 'const' | 'rw' | 'ro' | 'wo'
+xpi_mod_stream ::= 'stream'
+xpi_mod_observe ::= 'observe'
+xpi_serial ::= '#' DEC_LIT_RAW
+
+xpi_body ::= '{' xpi_item_with_recover* '}' { pin = 1 }
+private xpi_item_with_recover ::= !"}" (xpi_block | xpi_field | xpi_impl) {
+    pin = 1
+    recoverWhile = xpi_item_recover
+}
+xpi_item_recover ::= !('}' | (ident ':') | 'rs' | 'impl')
+
+xpi_field ::= ident ':' expr ';' { pin = 2 }
+xpi_impl ::= 'impl' expr ';' { pin = 1 }
