@@ -17,7 +17,7 @@
                 implementationClass="tech.vhrd.vhl.VhlHighlighterFactory"/>
         <colorSettingsPage implementation="tech.vhrd.vhl.VhlColorSettingsPage"/>
         <additionalTextAttributes scheme="Darcula" file="/tech/vhrd/vhl/colorscheme/VhlDarcula.xml"/>
-
+        <lang.commenter language="Vhl" implementationClass="tech.vhrd.vhl.VhlCommenter" />
         <!-- Annotators -->
         <annotator language="Vhl" implementationClass="tech.vhrd.vhl.annotator.VhlHighlightingAnnotator"/>
     </extensions>

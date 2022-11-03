@@ -219,6 +219,7 @@ fixed_lit ::= 'todo'
 float_lit ::= FLOAT_LIT_RAW
 bool_lit ::= 'true' | 'false'
 discrete_lit ::= (HEX_LIT_RAW | BIN_LIT_RAW | OCT_LIT_RAW | DEC_LIT_RAW) discrete_ty?
+char_lit ::= CHAR_LITERAL
 
 string_lit ::= STRING_LITERAL
 array_lit ::= '[' lit (',' lit)* ','? ']'
@@ -274,7 +275,7 @@ xpi_resource_ty ::= '<' (xpi_resource_transform? (xpi_resource_cell_ty | ty))? (
 xpi_resource_ty_recover ::= !('{')
 
 xpi_resource_cell_ty ::= 'Cell' '<' xpi_resource_transform? ty '>'
-xpi_resource_transform ::= xpi_access_mode ('+' xpi_mod_stream | xpi_mod_observe)?
+xpi_resource_transform ::= xpi_access_mode  ('+' xpi_mod_stream | '+' xpi_mod_observe)?
 xpi_access_mode ::= 'const' | 'rw' | 'ro' | 'wo'
 xpi_mod_stream ::= 'stream'
 xpi_mod_observe ::= 'observe'
@@ -285,7 +286,7 @@ private xpi_item_with_recover ::= !"}" (xpi_block | xpi_field | xpi_impl) {
     pin = 1
     recoverWhile = xpi_item_recover
 }
-xpi_item_recover ::= !('}' | (ident ':') | 'rs' | 'impl')
+xpi_item_recover ::= !('}' | (ident ':') | 'rs' | 'impl' | doc_attr)
 
 xpi_field ::= ident ':' expr ';' { pin = 2 }
 xpi_impl ::= 'impl' expr ';' { pin = 1 }
