@@ -159,6 +159,7 @@ EOL_DOC_LINE  = {LINE_WS}*!(!("///".*)|("////".*))
 //  "textual_ty"                         { return TEXTUAL_TY; }
   "char"                               { return CHAR; }
   "str"                                { return STR; }
+  "bool"                               { return BOOL; }
 //  "char_lit"                           { return CHAR_LIT; }
 //  "tuple_lit"                          { return TUPLE_LIT; }
 //  "struct_lit"                         { return STRUCT_LIT; }

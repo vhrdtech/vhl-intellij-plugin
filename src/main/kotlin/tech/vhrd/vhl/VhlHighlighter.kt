@@ -31,11 +31,14 @@ private fun makeTokenMap(): Map<IElementType, TextAttributesKey> {
     result[VhlTypes.IMPL_KW] = VhlColors.KEYWORD
     result[VhlTypes.XPI_IMPL] = VhlColors.KEYWORD
 
-//    result[VhlTypes.DISCRETE_SIGNED_TY_IMPLICIT] = VhlColors.BUILTIN_TYPE
-//    result[VhlTypes.DISCRETE_SIGNED_TY_IMPLICIT] = VhlColors.BUILTIN_TYPE
-//    result[VhlTypes.FIXED_TY] = VhlColors.BUILTIN_TYPE
-//    result[VhlTypes.FLOATING_TY] = VhlColors.BUILTIN_TYPE
-//    result[VhlTypes.TEXTUAL_TY] = VhlColors.BUILTIN_TYPE
+    result[VhlTypes.DISCRETE_SIGNED_TY_IMPLICIT] = VhlColors.BUILTIN_TYPE
+    result[VhlTypes.DISCRETE_UNSIGNED_TY_IMPLICIT] = VhlColors.BUILTIN_TYPE
+    result[VhlTypes.FIXED_SIGNED_TY_IMPLICIT] = VhlColors.BUILTIN_TYPE
+    result[VhlTypes.FIXED_UNSIGNED_TY_IMPLICIT] = VhlColors.BUILTIN_TYPE
+    result[VhlTypes.BOOL] = VhlColors.BUILTIN_TYPE
+    result[VhlTypes.CHAR] = VhlColors.BUILTIN_TYPE
+    result[VhlTypes.STR] = VhlColors.BUILTIN_TYPE
+    result[VhlTypes.FLOAT_TY_IMPLICIT] = VhlColors.BUILTIN_TYPE
 
     result[VhlTypes.EOL_COMMENT] = VhlColors.EOL_COMMENT
     result[VhlTypes.BLOCK_COMMENT] = VhlColors.BLOCK_COMMENT

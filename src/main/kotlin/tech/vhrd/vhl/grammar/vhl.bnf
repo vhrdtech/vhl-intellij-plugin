@@ -96,7 +96,7 @@
           IMPL_KW = 'impl'
           STREAM_KW = 'stream'
           OBSERVE_KW = 'observe'
-          BOOL_KW = 'bool'
+          BOOL = 'bool'
           CHAR = 'char'
           STR = 'str'
 
