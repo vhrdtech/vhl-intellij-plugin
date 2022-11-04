@@ -110,6 +110,7 @@ EOL_DOC_LINE  = {LINE_WS}*!(!("///".*)|("////".*))
   "::"                                 { return COLONCOLON; }
   ";"                                  { return SEMICOLON; }
   ","                                  { return COMMA; }
+  "`"                                  { return BACKTICK; }
   "="                                  { return EQ; }
   "!="                                 { return EXCLEQ; }
   "=="                                 { return EQEQ; }
@@ -172,6 +173,7 @@ EOL_DOC_LINE  = {LINE_WS}*!(!("///".*)|("////".*))
   {DISCRETE_UNSIGNED_TY_IMPLICIT}      { return DISCRETE_UNSIGNED_TY_IMPLICIT; }
   {DISCRETE_SIGNED_TY_IMPLICIT}        { return DISCRETE_SIGNED_TY_IMPLICIT; }
   {STRING_LITERAL}                     { return STRING_LITERAL; }
+  {CHAR_LITERAL}                       { return CHAR_LITERAL; }
   {FLOAT_LIT_RAW}                      { return FLOAT_LIT_RAW; }
   {DEC_LIT_RAW}                        { return DEC_LIT_RAW; }
   {HEX_LIT_RAW}                        { return HEX_LIT_RAW; }

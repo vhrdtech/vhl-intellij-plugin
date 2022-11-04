@@ -8,21 +8,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.elementType
 import tech.vhrd.vhl.VhlColors
-import tech.vhrd.vhl.psi.VhlAttribute
-import tech.vhrd.vhl.psi.VhlDiscreteTy
-import tech.vhrd.vhl.psi.VhlEnumItem
-import tech.vhrd.vhl.psi.VhlInnerAttr
-import tech.vhrd.vhl.psi.VhlNamedFieldDecl
-import tech.vhrd.vhl.psi.VhlOuterAttr
-import tech.vhrd.vhl.psi.VhlTypes.IDENT
-import tech.vhrd.vhl.psi.VhlTypes.IMPL_KW
-import tech.vhrd.vhl.psi.VhlUnitExprTicked
-import tech.vhrd.vhl.psi.VhlXpiAccessMode
-import tech.vhrd.vhl.psi.VhlXpiModObserve
-import tech.vhrd.vhl.psi.VhlXpiModStream
-import tech.vhrd.vhl.psi.VhlXpiResourceTransform
-import tech.vhrd.vhl.psi.VhlXpiSerial
-import tech.vhrd.vhl.psi.VhlXpiUriSegment
+import tech.vhrd.vhl.psi.*
+import tech.vhrd.vhl.psi.VhlTypes.*
 
 class VhlHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -37,6 +24,8 @@ class VhlHighlightingAnnotator : Annotator {
             is VhlOuterAttr -> VhlColors.ATTRIBUTE
             is VhlInnerAttr -> VhlColors.ATTRIBUTE
             is VhlUnitExprTicked -> VhlColors.UNIT
+            is VhlNumBound -> VhlColors.BOUND
+            is VhlNumBoundBraced -> VhlColors.BOUND
             else -> null
         } ?: return
 
@@ -49,7 +38,6 @@ private fun highlightLeaf(element: PsiElement, holder: AnnotationHolder): TextAt
     val parent = element.parent ?: return null
     return when (element.elementType) {
         IDENT -> highlightIdentifier(element, parent, holder)
-        IMPL_KW -> VhlColors.KEYWORD
         else -> null
     }
 }
@@ -60,6 +48,22 @@ private fun highlightIdentifier(element: PsiElement, parent: PsiElement, holder:
         is VhlEnumItem -> VhlColors.ENUM_ITEM
         is VhlXpiUriSegment -> VhlColors.XPI_URI_IDENT
         is VhlXpiResourceTransform -> VhlColors.XPI_RS_TRANSFORM
+        is VhlXpiField -> VhlColors.STRUCT_ITEM
+        is VhlPath -> highlightIdentifierInPath(element, parent, holder)
+        else -> null
+    }
+}
+
+private fun highlightIdentifierInPath(element: PsiElement, parent: PsiElement, holder: AnnotationHolder): TextAttributesKey? {
+    return when (element.text) {
+        "Self" -> VhlColors.KEYWORD
+        "self" -> VhlColors.KEYWORD
+        "super" -> VhlColors.KEYWORD
+        "indexof" -> VhlColors.KEYWORD
+        "autonum" -> VhlColors.KEYWORD
+        "str" -> VhlColors.KEYWORD
+        "bool" -> VhlColors.KEYWORD
+        "chunks" -> VhlColors.KEYWORD
         else -> null
     }
 }

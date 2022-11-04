@@ -27,6 +27,9 @@ private fun makeTokenMap(): Map<IElementType, TextAttributesKey> {
     result[VhlTypes.RS_KW] = VhlColors.KEYWORD
     result[VhlTypes.CONST_KW] = VhlColors.KEYWORD
     result[VhlTypes.TYPE_KW] = VhlColors.KEYWORD
+    result[VhlTypes.FN_KW] = VhlColors.KEYWORD
+    result[VhlTypes.IMPL_KW] = VhlColors.KEYWORD
+    result[VhlTypes.XPI_IMPL] = VhlColors.KEYWORD
 
     result[VhlTypes.EOL_COMMENT] = VhlColors.EOL_COMMENT
     result[VhlTypes.BLOCK_COMMENT] = VhlColors.BLOCK_COMMENT
@@ -36,6 +39,7 @@ private fun makeTokenMap(): Map<IElementType, TextAttributesKey> {
     result[VhlTypes.INNER_BLOCK_DOC_COMMENT] = VhlColors.DOC_COMMENT
 
     result[VhlTypes.STRING_LITERAL] = VhlColors.STRING
+    result[VhlTypes.CHAR_LITERAL] = VhlColors.CHAR
     result[VhlTypes.DEC_LIT_RAW] = VhlColors.NUMBER
     result[VhlTypes.HEX_LIT_RAW] = VhlColors.NUMBER
     result[VhlTypes.OCT_LIT_RAW] = VhlColors.NUMBER
@@ -53,7 +57,6 @@ private fun makeTokenMap(): Map<IElementType, TextAttributesKey> {
 //    result[VhlTypes.XPI_ACCESS_MODE] = VhlColors.XPI_RS_TRANSFORM
 //    result[VhlTypes.XPI_MOD_OBSERVE] = VhlColors.XPI_RS_TRANSFORM
 //    result[VhlTypes.XPI_MOD_STREAM] = VhlColors.XPI_RS_TRANSFORM
-    result[VhlTypes.XPI_IMPL] = VhlColors.KEYWORD
 
     return result
 }

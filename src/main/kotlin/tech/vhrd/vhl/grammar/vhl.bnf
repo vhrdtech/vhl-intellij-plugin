@@ -37,6 +37,7 @@
           EXCLEQ      =  '!='
           EQEQ        =  '=='
           EXCL        =  '!'
+          BACKTICK    =  '`'
 //          PLUSEQ      =  '+='
           PLUS        =  '+'
 //          MINUSEQ     =  '-='
@@ -195,7 +196,11 @@ fn_ret_ty ::= '->' ty
 
 type_ascription ::= ':' ty { pin = 1 }
 
-type_alias_stmt ::= 'type' ident '=' ty ';' { pin = 3 }
+type_alias_stmt ::= 'type' ident '=' ty ';' {
+    pin = 3
+    //recoverWhile = semicolon_recover
+}
+//private semicolon_recover ::= !";"
 
 generics ::= '<' generic_param (',' generic_param)* ','? '>'
 generic_param ::= expr | ty
@@ -213,9 +218,9 @@ num_bound_list ::= expr_list
 //////////////
 // Literals //
 //////////////
-lit ::= bool_lit | fixed_lit | float_lit | discrete_lit | char_lit | string_lit | tuple_lit | struct_lit | enum_lit | array_lit
-number_lit ::= fixed_lit | float_lit | discrete_lit
-fixed_lit ::= 'todo'
+lit ::= bool_lit | float_lit | discrete_lit | char_lit | string_lit | tuple_lit | struct_lit | enum_lit | array_lit
+number_lit ::= float_lit | discrete_lit
+//fixed_lit ::= 'todo'
 float_lit ::= FLOAT_LIT_RAW
 bool_lit ::= 'true' | 'false'
 discrete_lit ::= (HEX_LIT_RAW | BIN_LIT_RAW | OCT_LIT_RAW | DEC_LIT_RAW) discrete_ty?
@@ -267,9 +272,13 @@ unit_expr_ticked ::= '`' expr '`'
 /////////
 // xPI //
 /////////
-xpi_block ::= doc_attr 'rs' xpi_uri_segment xpi_resource_ty? xpi_body?
-xpi_uri_segment ::= (ident expr_ticked? ident_continue?) | (expr_ticked ident_continue?)
-xpi_resource_ty ::= '<' (xpi_resource_transform? (xpi_resource_cell_ty | ty))? (',' xpi_serial)? '>' {
+xpi_block ::= doc_attr 'rs' xpi_uri_segment xpi_resource_ty? xpi_body? {
+    pin = 2
+    //recoverWhile = xpi_item_recover
+}
+xpi_uri_segment ::= (ident expr_ticked? (ident_continue | ident)?) | (expr_ticked (ident_continue | ident)?)
+xpi_resource_ty ::= '<' (xpi_resource_transform? (xpi_resource_cell_ty | ty))? (',' xpi_serial ('..=' xpi_serial)? )? '>' {
+    pin = 1
     recoverWhile = xpi_resource_ty_recover
 }
 xpi_resource_ty_recover ::= !('{')
@@ -282,9 +291,9 @@ xpi_mod_observe ::= 'observe'
 xpi_serial ::= '#' DEC_LIT_RAW
 
 xpi_body ::= '{' xpi_item_with_recover* '}' { pin = 1 }
-private xpi_item_with_recover ::= !"}" (xpi_block | xpi_field | xpi_impl) {
+xpi_item_with_recover ::= !"}" (xpi_block | xpi_field | xpi_impl) {
     pin = 1
-    recoverWhile = xpi_item_recover
+    //recoverWhile = xpi_item_recover
 }
 xpi_item_recover ::= !('}' | (ident ':') | 'rs' | 'impl' | doc_attr)
 

@@ -10,6 +10,7 @@ object VhlColors {
 
     val KEYWORD = r("vhl.KEYWORD", Default.KEYWORD)
     val STRING = r("vhl.STRING", Default.STRING)
+    val CHAR = r("vhl.CHAR", Default.STRING)
     val NUMBER = r("vhl.NUMBER", Default.NUMBER)
     val CONSTANT = r("vhl.CONSTANT", Default.CONSTANT)
     val BOOLEAN = r("vhl.BOOLEAN", Default.PREDEFINED_SYMBOL)
@@ -32,4 +33,5 @@ object VhlColors {
     val BUILTIN_TYPE = r("vhl.BUILTIN_TYPE", Default.KEYWORD)
     val ATTRIBUTE = r("vhl.ATTRIBUTE", Default.METADATA)
     val UNIT = r("vhl.UNIT", Default.METADATA)
+    val BOUND = r("vhl.BOUND", Default.METADATA)
 }
