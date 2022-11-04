@@ -79,6 +79,9 @@ WHITE_SPACE      = {WHITE_SPACE_CHAR}+
 
 DISCRETE_UNSIGNED_TY_IMPLICIT=u[1-9][0-9]*
 DISCRETE_SIGNED_TY_IMPLICIT=i[1-9][0-9]*
+FIXED_UNSIGNED_TY_IMPLICIT=uq[1-9][0-9]*
+FIXED_SIGNED_TY_IMPLICIT=iq[1-9][0-9]*
+FLOAT_TY_IMPLICIT=f[1-9][0-9]*
 
 SUFFIX     = {IDENT}
 CHAR_LITERAL   = ( \' ( [^\\\'\r\n] | \\[^\r\n] | "\\x" [a-fA-F0-9]+ | "\\u{" [a-fA-F0-9][a-fA-F0-9_]* "}"? )? ( \' {SUFFIX}? | \\ )? )
@@ -151,16 +154,18 @@ EOL_DOC_LINE  = {LINE_WS}*!(!("///".*)|("////".*))
   "impl"                               { return IMPL_KW; }
   "stream"                             { return STREAM_KW; }
   "observe"                            { return OBSERVE_KW; }
-  "fixed_ty"                           { return FIXED_TY; }
-  "floating_ty"                        { return FLOATING_TY; }
-  "textual_ty"                         { return TEXTUAL_TY; }
-  "char_lit"                           { return CHAR_LIT; }
-  "tuple_lit"                          { return TUPLE_LIT; }
-  "struct_lit"                         { return STRUCT_LIT; }
-  "enum_lit"                           { return ENUM_LIT; }
-  "unary_expr"                         { return UNARY_EXPR; }
-  "tuple_of_expressions"               { return TUPLE_OF_EXPRESSIONS; }
-  "expression_parenthesized"           { return EXPRESSION_PARENTHESIZED; }
+//  "fixed_ty"                           { return FIXED_TY; }
+//  "floating_ty"                        { return FLOATING_TY; }
+//  "textual_ty"                         { return TEXTUAL_TY; }
+  "char"                               { return CHAR; }
+  "str"                                { return STR; }
+//  "char_lit"                           { return CHAR_LIT; }
+//  "tuple_lit"                          { return TUPLE_LIT; }
+//  "struct_lit"                         { return STRUCT_LIT; }
+//  "enum_lit"                           { return ENUM_LIT; }
+//  "unary_expr"                         { return UNARY_EXPR; }
+//  "tuple_of_expressions"               { return TUPLE_OF_EXPRESSIONS; }
+//  "expression_parenthesized"           { return EXPRESSION_PARENTHESIZED; }
 
   "/*"                            { yybegin(IN_BLOCK_COMMENT); yypushback(2); }
 
@@ -172,6 +177,9 @@ EOL_DOC_LINE  = {LINE_WS}*!(!("///".*)|("////".*))
 
   {DISCRETE_UNSIGNED_TY_IMPLICIT}      { return DISCRETE_UNSIGNED_TY_IMPLICIT; }
   {DISCRETE_SIGNED_TY_IMPLICIT}        { return DISCRETE_SIGNED_TY_IMPLICIT; }
+  {FIXED_UNSIGNED_TY_IMPLICIT}         { return FIXED_UNSIGNED_TY_IMPLICIT; }
+  {FIXED_SIGNED_TY_IMPLICIT}           { return FIXED_SIGNED_TY_IMPLICIT; }
+  {FLOAT_TY_IMPLICIT}                  { return FLOAT_TY_IMPLICIT; }
   {STRING_LITERAL}                     { return STRING_LITERAL; }
   {CHAR_LITERAL}                       { return CHAR_LITERAL; }
   {FLOAT_LIT_RAW}                      { return FLOAT_LIT_RAW; }

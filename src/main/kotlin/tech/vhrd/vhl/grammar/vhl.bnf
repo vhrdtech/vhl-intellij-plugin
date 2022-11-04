@@ -96,6 +96,10 @@
           IMPL_KW = 'impl'
           STREAM_KW = 'stream'
           OBSERVE_KW = 'observe'
+          BOOL_KW = 'bool'
+          CHAR = 'char'
+          STR = 'str'
+
 
 //          RESERVED_KEYWORD = 'reserved_keyword'
 
@@ -104,6 +108,9 @@
 //    DOC_LINE='regexp:///.*'
     DISCRETE_UNSIGNED_TY_IMPLICIT = 'regexp:u[1-9][0-9]*'
     DISCRETE_SIGNED_TY_IMPLICIT = 'regexp:i[1-9][0-9]*'
+    FIXED_UNSIGNED_TY_IMPLICIT = 'regexp:uq[1-9][0-9]*\.[1-9][0-9]*'
+    FIXED_SIGNED_TY_IMPLICIT = 'regexp:iq[1-9][0-9]*\.[1-9][0-9]*'
+    FLOAT_TY_IMPLICIT = 'regexp:f[1-9][0-9]*'
     STRING_LITERAL = 'regexp:".*"'
     FLOAT_LIT_RAW = 'regexp:[0-9][0-9_]*.[0-9][0-9_]*'
     DEC_LIT_RAW = 'regexp:[0-9][0-9_]*'
@@ -185,6 +192,12 @@ discrete_signed_ty ::= DISCRETE_SIGNED_TY_IMPLICIT
 discrete_unsigned_ty ::= DISCRETE_UNSIGNED_TY_IMPLICIT
 discrete_ty ::= (discrete_signed_ty | discrete_unsigned_ty) '_'? num_bound_braced? '_'? unit_expr_ticked?
 
+fixed_signed_ty ::= FIXED_SIGNED_TY_IMPLICIT
+fixed_unsigned_ty ::= FIXED_UNSIGNED_TY_IMPLICIT
+fixed_ty ::= (fixed_signed_ty | fixed_unsigned_ty) '_'? num_bound_braced? '_'? unit_expr_ticked?
+
+floating_ty ::= FLOAT_TY_IMPLICIT '_'? num_bound_braced? '_'? unit_expr_ticked?
+textual_ty ::= 'char' | 'str'
 
 array_ty ::= '[' ty ';' num_bound ']'
 derive ::= '_'

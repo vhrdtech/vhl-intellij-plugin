@@ -19,7 +19,13 @@ class VhlHighlightingAnnotator : Annotator {
             is VhlXpiAccessMode -> VhlColors.XPI_RS_TRANSFORM
             is VhlXpiModObserve -> VhlColors.XPI_RS_TRANSFORM
             is VhlXpiModStream -> VhlColors.XPI_RS_TRANSFORM
+
             is VhlDiscreteTy -> VhlColors.BUILTIN_TYPE
+            is VhlFixedTy -> VhlColors.BUILTIN_TYPE
+            is VhlFloatingTy -> VhlColors.BUILTIN_TYPE
+            is VhlTextualTy -> VhlColors.BUILTIN_TYPE
+            is VhlBoolTy -> VhlColors.BUILTIN_TYPE
+
             is VhlXpiSerial -> VhlColors.NUMBER
             is VhlOuterAttr -> VhlColors.ATTRIBUTE
             is VhlInnerAttr -> VhlColors.ATTRIBUTE
@@ -61,8 +67,8 @@ private fun highlightIdentifierInPath(element: PsiElement, parent: PsiElement, h
         "super" -> VhlColors.KEYWORD
         "indexof" -> VhlColors.KEYWORD
         "autonum" -> VhlColors.KEYWORD
-        "str" -> VhlColors.KEYWORD
-        "bool" -> VhlColors.KEYWORD
+//        "str" -> VhlColors.KEYWORD
+//        "bool" -> VhlColors.KEYWORD
         "chunks" -> VhlColors.KEYWORD
         else -> null
     }
