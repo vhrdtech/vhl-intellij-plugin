@@ -140,8 +140,10 @@ EOL_DOC_LINE  = {LINE_WS}*!(!("///".*)|("////".*))
   "_"                                  { return UNDERSCORE; }
   "#"                                  { return HASH; }
   "||"                                 { return OROR; }
+
   "type"                               { return TYPE_KW; }
   "rs"                                 { return RS_KW; }
+  "trait"                              { return TRAIT_KW; }
   "struct"                             { return STRUCT_KW; }
   "enum"                               { return ENUM_KW; }
   "fn"                                 { return FN_KW; }
@@ -154,19 +156,9 @@ EOL_DOC_LINE  = {LINE_WS}*!(!("///".*)|("////".*))
   "impl"                               { return IMPL_KW; }
   "stream"                             { return STREAM_KW; }
   "observe"                            { return OBSERVE_KW; }
-//  "fixed_ty"                           { return FIXED_TY; }
-//  "floating_ty"                        { return FLOATING_TY; }
-//  "textual_ty"                         { return TEXTUAL_TY; }
   "char"                               { return CHAR; }
   "str"                                { return STR; }
   "bool"                               { return BOOL; }
-//  "char_lit"                           { return CHAR_LIT; }
-//  "tuple_lit"                          { return TUPLE_LIT; }
-//  "struct_lit"                         { return STRUCT_LIT; }
-//  "enum_lit"                           { return ENUM_LIT; }
-//  "unary_expr"                         { return UNARY_EXPR; }
-//  "tuple_of_expressions"               { return TUPLE_OF_EXPRESSIONS; }
-//  "expression_parenthesized"           { return EXPRESSION_PARENTHESIZED; }
 
   "/*"                            { yybegin(IN_BLOCK_COMMENT); yypushback(2); }
 

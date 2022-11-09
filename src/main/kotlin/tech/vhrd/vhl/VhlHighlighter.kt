@@ -25,6 +25,7 @@ private fun makeTokenMap(): Map<IElementType, TextAttributesKey> {
     result[VhlTypes.STRUCT_KW] = VhlColors.KEYWORD
     result[VhlTypes.ENUM_KW] = VhlColors.KEYWORD
     result[VhlTypes.RS_KW] = VhlColors.KEYWORD
+    result[VhlTypes.TRAIT_KW] = VhlColors.KEYWORD
     result[VhlTypes.CONST_KW] = VhlColors.KEYWORD
     result[VhlTypes.TYPE_KW] = VhlColors.KEYWORD
     result[VhlTypes.FN_KW] = VhlColors.KEYWORD
